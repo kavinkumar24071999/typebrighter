@@ -4,31 +4,31 @@ import {words} from '../models/words'
 import './Home.css'
 
 class Home extends Component {
-  wordsClass = {
+  wordsStyle = {
     0: ""
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      currentInput: "",
+      currentWord: "",
       selectedWord: "",
       wordStatus: "highlight",
-      spaceCount: 0,
+      wordCount: 0,
     }
   }
 
   render() {
     return <div className={'home'}>
-      {this.randomWords()}
+      {this.getRandomWords()}
       {this.getInputTextBox()}
     </div>;
   }
 
-  randomWords() {
+  getRandomWords() {
     return words.map((word, index) => {
       return <span id={index}
-                   className={this.wordsClass[index] ? this.wordsClass[index]
+                   className={this.wordsStyle[index] ? this.wordsStyle[index]
                      : this.isSelected(word, index) ? this.state.wordStatus : ""}> {word}
       </span>
     })
@@ -37,45 +37,60 @@ class Home extends Component {
   getInputTextBox() {
     return (<input type={'text'} className={"TextBox"}
                    onChange={(event) => {
-                     this.handleInputChange(event.target.value)
+                     this.handleWordChange(event.target.value)
                      this.handleWordStatus()
                    }}
-                   value={this.state.currentInput}
+                   value={this.state.currentWord}
                    tabIndex={18}
     />)
   }
 
   handleWordStatus = () => {
-    const selectedWord = words[this.state.spaceCount];
-    if (selectedWord === this.state.currentInput) {
-      this.wordsClass[this.state.spaceCount] = 'correct'
+    const selectedWord = words[this.state.wordCount];
+    if (this.isCorrectCompleteWord(selectedWord)) {
+      this.wordsStyle[this.state.wordCount] = 'correct'
       return
     }
-    if (!selectedWord.includes(this.state.currentInput) && selectedWord.length !== this.state.currentInput) {
-      this.wordsClass[this.state.spaceCount] = 'inCorrect'
-      return
-    }
-    if (selectedWord.includes(this.state.currentInput) || !this.state.currentInput) {
+    if (this.isCorrectIncompleteWord(selectedWord)) {
       this.setState({wordStatus: 'highlight'})
       return
     }
-    this.setState({wordStatus: 'inCorrect'})
-  }
-
-  handleInputChange(value) {
-    const selectedWord = words[this.state.spaceCount];
-    if (value.includes(" ")) {
-      if (selectedWord !== this.state.currentInput)
-        this.wordsClass[this.state.spaceCount] = 'inCorrect'
-      this.setState({currentInput: ""});
-      this.setState({spaceCount: this.state.spaceCount + 1});
+    if (this.isIncompleteIncorrectWord(selectedWord)) {
+      this.wordsStyle[this.state.wordCount] = 'inCorrect'
       return
     }
-    this.setState({currentInput: value});
+  }
+
+  isCorrectIncompleteWord(selectedWord) {
+    return selectedWord.includes(this.state.currentWord) || !this.state.currentWord;
+  }
+
+  isCorrectCompleteWord(selectedWord) {
+    return selectedWord === this.state.currentWord;
+  }
+
+  isIncompleteIncorrectWord(selectedWord) {
+    return selectedWord !== this.state.currentWord;
+  }
+
+  handleWordChange(value) {
+    const selectedWord = words[this.state.wordCount];
+    if (value.includes(" ")) {
+      this.handleIncorrectWord(selectedWord);
+      this.setState({currentWord: ""});
+      this.setState({wordCount: this.state.wordCount + 1});
+      return
+    }
+    this.setState({currentWord: value});
+  }
+
+  handleIncorrectWord(selectedWord) {
+    if (this.isIncompleteIncorrectWord(selectedWord))
+      this.wordsStyle[this.state.wordCount] = 'inCorrect'
   }
 
   isSelected = (word, index) => {
-    return index === this.state.spaceCount;
+    return index === this.state.wordCount;
   }
 }
 
