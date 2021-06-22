@@ -1,0 +1,28 @@
+.home {
+    margin: 60px auto;
+    align-content: center;
+    font-size: x-large;
+    max-width: 50vw;
+}
+
+.highlight {
+    background: #91f8f8;
+}
+
+.correct {
+    color: #67a803;
+}
+
+.inCorrect {
+    color: #fa3e3e;
+}
+
+input {
+    margin: 30px auto auto;
+    display: flex;
+    height: 50px;
+    width: 40vw;
+    font-size: x-large;
+    font-family: inherit;
+    background-color: #ffffff;
+}
