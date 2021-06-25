@@ -7,6 +7,7 @@
 
 .highlight {
     background: #91f8f8;
+    font-size: xx-large;
 }
 
 .correct {
@@ -17,8 +18,10 @@
     color: #fa3e3e;
 }
 
-.inCorrect-highlight{
+.inCorrect-highlight {
     background: #f52f2f;
+    font-size: xx-large;
+
 }
 
 input {
