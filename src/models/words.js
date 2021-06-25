@@ -1,4 +1,4 @@
-export const words = ["have", "you", "ever", "stood", "in", "front", "of", "a", "window",
+export let words = ["have", "you", "ever", "stood", "in", "front", "of", "a", "window",
   "amazed", "by", "the", "view", "that", "it", "was", "throwing", "at", "you", "I",
   "did", "it", "more", "often", "Adding", "to", "that", "I", "have", "this",
   "obsession", "of", "taking", "a", "picture", "whenever", "I", "am", "near", "a", "window",

@@ -3,6 +3,8 @@ import React from 'react';
 import {words} from '../models/words'
 import './Home.css'
 
+const MAXWORDCOUNT = 20;
+
 class Home extends Component {
   actualWordStyle = {
     0: ""
@@ -15,7 +17,8 @@ class Home extends Component {
       selectedWord: "",
       wordCurrentStyle: "highlight",
       wordCount: 0,
-      correctWordCount: 0
+      correctWordCount: 0,
+      words: words
     }
   }
 
@@ -26,13 +29,25 @@ class Home extends Component {
     </div>;
   }
 
+  shuffle(words) {
+    return words.sort(() => .5 - Math.random());
+  }
+
   getRandomWords() {
-    return words.map((word, index) => {
+    this.state.wordCount > MAXWORDCOUNT && this.initialise()
+    return this.state.words.slice(0, 21).map((word, index) => {
       return <span key={index} id={index}
                    className={this.isSelected(index) ? this.state.wordCurrentStyle
                      : this.actualWordStyle[index] ? this.actualWordStyle[index] : ""}> {word}
       </span>
     })
+  }
+
+  initialise() {
+    console.log(this.state.correctWordCount)
+    this.setState({wordCount: 0})
+    this.setState({words: this.shuffle(this.state.words)})
+    this.actualWordStyle = {};
   }
 
   getInputTextBox() {
@@ -47,6 +62,7 @@ class Home extends Component {
 
   handleWordChange(word) {
     if (this.completeCorrect(word)) {
+      this.setState({correctWordCount: this.state.correctWordCount + 1})
       this.actualWordStyle[this.state.wordCount] = "correct"
     }
     if (this.incorrect(word)) {
