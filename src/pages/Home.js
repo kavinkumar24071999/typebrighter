@@ -3,7 +3,7 @@ import React from 'react';
 import {words} from '../models/words'
 import './Home.css'
 
-const MAXWORDCOUNT = 20;
+const MAX_WORD_COUNT = 19;
 
 class Home extends Component {
   actualWordStyle = {
@@ -15,10 +15,10 @@ class Home extends Component {
     this.state = {
       currentWord: "",
       selectedWord: "",
-      wordCurrentStyle: "highlight",
+      selectedWordStyle: "highlight",
       wordCount: 0,
       correctWordCount: 0,
-      words: words
+      words: words,
     }
   }
 
@@ -26,6 +26,7 @@ class Home extends Component {
     return <div className={'home'}>
       {this.getRandomWords()}
       {this.getInputTextBox()}
+      number of correct words :{this.state.correctWordCount}
     </div>;
   }
 
@@ -34,13 +35,17 @@ class Home extends Component {
   }
 
   getRandomWords() {
-    this.state.wordCount > MAXWORDCOUNT && this.initialise()
-    return this.state.words.slice(0, 21).map((word, index) => {
+    this.state.wordCount > MAX_WORD_COUNT && this.initialise()
+    return (<div className={'words-bar'}>{this.state.words.slice(0, 20).map((word, index) => {
       return <span key={index} id={index}
-                   className={this.isSelected(index) ? this.state.wordCurrentStyle
-                     : this.actualWordStyle[index] ? this.actualWordStyle[index] : ""}> {word}
+                   className={this.getWordStatus(index)}>{word}
       </span>
-    })
+    })}</div>)
+  }
+
+  getWordStatus(index) {
+    return this.isSelected(index) ? this.state.selectedWordStyle
+      : this.actualWordStyle[index] ? this.actualWordStyle[index] : "default";
   }
 
   initialise() {
@@ -61,21 +66,23 @@ class Home extends Component {
   }
 
   handleWordChange(word) {
+
+    console.log(this.state.wordCount)
     if (this.completeCorrect(word)) {
       this.setState({correctWordCount: this.state.correctWordCount + 1})
       this.actualWordStyle[this.state.wordCount] = "correct"
     }
-    if (this.incorrect(word)) {
+    if (this.isIncorrect(word)) {
       this.actualWordStyle[this.state.wordCount] = "inCorrect"
-      this.setState({wordCurrentStyle: "inCorrect-highlight"})
+      this.setState({selectedWordStyle: "inCorrect-highlight"})
     }
     if (this.correctIncomplete(word)) {
-      this.setState({wordCurrentStyle: "highlight"})
+      this.setState({selectedWordStyle: "highlight"})
     }
     if (word.includes(" ")) {
       this.setState({currentWord: ""})
       this.setState({wordCount: this.state.wordCount + 1})
-      this.setState({wordCurrentStyle: "highlight"})
+      this.setState({selectedWordStyle: "highlight"})
       return
     }
     this.setState({currentWord: word})
@@ -89,7 +96,7 @@ class Home extends Component {
     return words[this.state.wordCount].includes(word) && words[this.state.wordCount].length > word.length;
   }
 
-  incorrect(word) {
+  isIncorrect(word) {
     return words[this.state.wordCount] !== (word.trim());
   }
 

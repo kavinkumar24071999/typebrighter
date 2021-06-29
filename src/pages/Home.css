@@ -23,6 +23,9 @@
     font-size: xx-large;
 
 }
+span{
+    margin: 2px 2px;
+}
 
 input {
     margin: 30px auto auto;
