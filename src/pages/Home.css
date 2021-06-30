@@ -1,3 +1,12 @@
+.words-bar {
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    align-content: space-around;
+    background-color: #F9F9F9;
+    padding: 20px;
+    max-width: 45vw;
+}
+
 .home {
     margin: 60px auto;
     align-content: center;
@@ -5,8 +14,22 @@
     max-width: 50vw;
 }
 
+button {
+    margin: 20px;
+    max-width: 80px;
+    align-content: center;
+    height: 50px;
+    width: 80px;
+    font-size: x-large;
+    font-weight: bold;
+    color: green;
+    background: #d7fcd7;
+    border-radius: 10px;
+}
+
 .highlight {
     background: #91f8f8;
+    box-shadow: 1px 1px 2px #cef8f8, 0 0 10px #808282, 0 0 5px #c1f8f8;
     font-size: xx-large;
 }
 
@@ -21,18 +44,23 @@
 .inCorrect-highlight {
     background: #f52f2f;
     font-size: xx-large;
-
 }
-span{
+
+span {
+    white-space: pre-wrap;
+    display: inline-block;
     margin: 2px 2px;
 }
 
+.hidden {
+    visibility: hidden;
+}
+
 input {
-    margin: 30px auto auto;
-    display: flex;
     height: 50px;
     width: 40vw;
     font-size: x-large;
     font-family: inherit;
-    background-color: #ffffff;
+    background-color: #CDF0EA;
+    border-radius: 10px;
 }

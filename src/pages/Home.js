@@ -18,16 +18,48 @@ class Home extends Component {
       selectedWordStyle: "highlight",
       wordCount: 0,
       correctWordCount: 0,
-      words: words,
+      words: this.shuffle(words),
+      timeInSeconds: 60,
+      isTimerStarted: false,
+      isWordVisible: false
     }
+    this.decrementSeconds = this.decrementSeconds.bind(this);
+    this.startTest = this.startTest.bind(this);
   }
 
   render() {
     return <div className={'home'}>
       {this.getRandomWords()}
       {this.getInputTextBox()}
-      number of correct words :{this.state.correctWordCount}
+      <button className={'start-button'} onClick={() => this.startTest()}>Start</button>
+      0:{this.state.timeInSeconds}
+      <p className={this.state.isWordVisible ? "hidden" : 'correct-words'}>Correct words
+        :{this.state.correctWordCount}</p>
     </div>;
+  }
+
+  startTest() {
+    this.setState({isWordVisible: true})
+    this.interval = setInterval(this.decrementSeconds, 1000);
+    if (this.state.timeInSeconds === 0) {
+      this.initialiseTimer();
+      this.initialiseNextWordSet();
+      this.setState({correctWordCount: 0})
+      this.setState({currentWord: ""})
+    }
+  }
+
+  initialiseTimer() {
+    //todo testing is pending
+    this.setState({timeInSeconds: 60})
+    clearInterval(this.interval)
+  }
+
+  decrementSeconds() {
+    // todo testing
+    if (this.state.timeInSeconds > 0) {
+      this.setState({timeInSeconds: this.state.timeInSeconds - 1})
+    }
   }
 
   shuffle(words) {
@@ -35,12 +67,15 @@ class Home extends Component {
   }
 
   getRandomWords() {
-    this.state.wordCount > MAX_WORD_COUNT && this.initialise()
-    return (<div className={'words-bar'}>{this.state.words.slice(0, 20).map((word, index) => {
-      return <span key={index} id={index}
-                   className={this.getWordStatus(index)}>{word}
+    if (this.state.wordCount > MAX_WORD_COUNT) this.initialiseNextWordSet()
+    return (
+      <div
+        className={this.state.isWordVisible ? 'words-bar' : "hidden"}>
+        {this.state.words.slice(0, 20).map((word, index) => {
+          return <span key={index} id={index}
+                       className={this.getWordStatus(index)}>{word}
       </span>
-    })}</div>)
+        })}</div>)
   }
 
   getWordStatus(index) {
@@ -48,8 +83,8 @@ class Home extends Component {
       : this.actualWordStyle[index] ? this.actualWordStyle[index] : "default";
   }
 
-  initialise() {
-    console.log(this.state.correctWordCount)
+  initialiseNextWordSet() {
+    // todo testing is pending
     this.setState({wordCount: 0})
     this.setState({words: this.shuffle(this.state.words)})
     this.actualWordStyle = {};
@@ -59,6 +94,7 @@ class Home extends Component {
     return (<input type={'text'} className={"TextBox"}
                    onChange={(event) => {
                      this.handleWordChange(event.target.value)
+                     this.handleWordVisibility()
                    }}
                    value={this.state.currentWord}
                    tabIndex={18}
@@ -66,8 +102,7 @@ class Home extends Component {
   }
 
   handleWordChange(word) {
-
-    console.log(this.state.wordCount)
+    //todo testing is pending
     if (this.completeCorrect(word)) {
       this.setState({correctWordCount: this.state.correctWordCount + 1})
       this.actualWordStyle[this.state.wordCount] = "correct"
@@ -86,6 +121,16 @@ class Home extends Component {
       return
     }
     this.setState({currentWord: word})
+  }
+
+  handleWordVisibility() {
+    // todo testing
+    if (this.state.timeInSeconds === 0) {
+      this.setState({isWordVisible: false})
+    }
+    if (!this.state.isTimerStarted) {
+      this.setState({isTimerStarted: true})
+    }
   }
 
   isSelected = (index) => {

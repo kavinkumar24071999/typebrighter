@@ -2,4 +2,4 @@ fileignoreconfig:
 - filename: package-lock.json
   checksum: 7bc422ccb4e8e0ad7237648ede6920706e5553f3447a413a3a168db63b6380f8
 - filename: src/pages/Home.js
-  checksum: 444a4a69f357072178e08a860020584a738ad1218d3f6bbf9731bcfa1e294c64
+  checksum: 1f2f50f9a2e0d664545f118a81511912af5927a2622ef40d2a4a918086a73b13
