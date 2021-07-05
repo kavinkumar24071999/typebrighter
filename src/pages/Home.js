@@ -17,7 +17,7 @@ class Home extends Component {
       currentWord: "",
       selectedWord: "",
       selectedWordStyle: "highlight",
-      wordCount: 0,
+      wordIndex: 0,
       correctWordCount: 0,
       words: this.shuffle(words),
       timeInSeconds: 60,
@@ -37,7 +37,7 @@ class Home extends Component {
              onClick={this.onTimerStart}
              onEnd={this.onTimerEnd}
       />
-      {this.displayResult()}
+      {!this.state.isWordVisible && this.displayResult()}
     </div>;
   }
 
@@ -48,7 +48,7 @@ class Home extends Component {
 
   onTimerStart() {
     this.setState({words: this.shuffle(words)})
-    this.setState({wordCount: 0})
+    this.setState({wordIndex: 0})
     this.setState({correctWordCount: 0})
     this.actualWordStyle = {};
     this.setState({isWordVisible: true})
@@ -60,7 +60,7 @@ class Home extends Component {
   }
 
   getWordsBar() {
-    if (this.state.wordCount > MAX_WORD_COUNT) this.getNextWordSet()
+    if (this.state.wordIndex > MAX_WORD_COUNT) this.getNextWordSet()
     return (
       <div
         className={this.state.isWordVisible ? 'words-bar' : "hidden"}>
@@ -78,7 +78,7 @@ class Home extends Component {
 
   getNextWordSet() {
     // todo testing is pending
-    this.setState({wordCount: 0})
+    this.setState({wordIndex: 0})
     this.setState({words: this.shuffle(this.state.words)})
     this.actualWordStyle = {};
   }
@@ -98,10 +98,10 @@ class Home extends Component {
     //todo testing is pending
     if (this.completeCorrect(word)) {
       this.setState({correctWordCount: this.state.correctWordCount + 1})
-      this.actualWordStyle[this.state.wordCount] = "correct"
+      this.actualWordStyle[this.state.wordIndex] = "correct"
     }
     if (this.isIncorrect(word)) {
-      this.actualWordStyle[this.state.wordCount] = "inCorrect"
+      this.actualWordStyle[this.state.wordIndex] = "inCorrect"
       this.setState({selectedWordStyle: "inCorrect-highlight"})
     }
     if (this.correctIncomplete(word)) {
@@ -109,7 +109,7 @@ class Home extends Component {
     }
     if (word.includes(" ")) {
       this.setState({currentWord: ""})
-      this.setState({wordCount: this.state.wordCount + 1})
+      this.setState({wordIndex: this.state.wordIndex + 1})
       this.setState({selectedWordStyle: "highlight"})
       return
     }
@@ -127,26 +127,25 @@ class Home extends Component {
   }
 
   isSelected = (index) => {
-    return index === this.state.wordCount;
+    return index === this.state.wordIndex;
   }
 
   correctIncomplete(word) {
-    return words[this.state.wordCount].includes(word) && words[this.state.wordCount].length > word.length;
+    return words[this.state.wordIndex].includes(word) && words[this.state.wordIndex].length > word.length;
   }
 
   isIncorrect(word) {
-    return words[this.state.wordCount] !== (word.trim());
+    return words[this.state.wordIndex] !== (word.trim());
   }
 
   completeCorrect(word) {
-    return words[this.state.wordCount] === word;
+    return words[this.state.wordIndex] === word;
   }
 
   displayResult() {
-    if (!this.state.isWordVisible)
-      return (<div className={'result'}>
-        Correct Words : {this.state.correctWordCount}
-      </div>)
+    return (<div className={'result'}>
+      Correct Words : {this.state.correctWordCount}
+    </div>)
   }
 }
 
