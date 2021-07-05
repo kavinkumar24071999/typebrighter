@@ -2,6 +2,7 @@ import {Component} from "react";
 import React from 'react';
 import {words} from '../models/words'
 import './Home.css'
+import Timer from "../components/timer/Timer";
 
 const MAX_WORD_COUNT = 19;
 
@@ -23,51 +24,43 @@ class Home extends Component {
       isTimerStarted: false,
       isWordVisible: false
     }
-    this.decrementSeconds = this.decrementSeconds.bind(this);
-    this.startTest = this.startTest.bind(this);
+    this.onTimerStart = this.onTimerStart.bind(this)
+    this.onTimerEnd = this.onTimerEnd.bind(this)
   }
 
   render() {
     return <div className={'home'}>
-      {this.getRandomWords()}
+      {this.getWordsBar()}
       {this.getInputTextBox()}
-      <button className={'start-button'} onClick={() => this.startTest()}>Start</button>
-      0:{this.state.timeInSeconds}
-      <p className={this.state.isWordVisible ? "hidden" : 'correct-words'}>Correct words
-        :{this.state.correctWordCount}</p>
+      <Timer seconds={this.state.timeInSeconds}
+             start={this.state.isTimerStarted}
+             onClick={this.onTimerStart}
+             onEnd={this.onTimerEnd}
+      />
+      {this.displayResult()}
     </div>;
   }
 
-  startTest() {
-    this.setState({isWordVisible: true})
-    this.interval = setInterval(this.decrementSeconds, 1000);
-    if (this.state.timeInSeconds === 0) {
-      this.initialiseTimer();
-      this.initialiseNextWordSet();
-      this.setState({correctWordCount: 0})
-      this.setState({currentWord: ""})
-    }
-  }
-
-  initialiseTimer() {
-    //todo testing is pending
+  onTimerEnd() {
+    this.setState({isWordVisible: false})
     this.setState({timeInSeconds: 60})
-    clearInterval(this.interval)
   }
 
-  decrementSeconds() {
-    // todo testing
-    if (this.state.timeInSeconds > 0) {
-      this.setState({timeInSeconds: this.state.timeInSeconds - 1})
-    }
+  onTimerStart() {
+    this.setState({words: this.shuffle(words)})
+    this.setState({wordCount: 0})
+    this.setState({correctWordCount: 0})
+    this.actualWordStyle = {};
+    this.setState({isWordVisible: true})
+    this.setState({currentWord: ""})
   }
 
   shuffle(words) {
     return words.sort(() => .5 - Math.random());
   }
 
-  getRandomWords() {
-    if (this.state.wordCount > MAX_WORD_COUNT) this.initialiseNextWordSet()
+  getWordsBar() {
+    if (this.state.wordCount > MAX_WORD_COUNT) this.getNextWordSet()
     return (
       <div
         className={this.state.isWordVisible ? 'words-bar' : "hidden"}>
@@ -83,7 +76,7 @@ class Home extends Component {
       : this.actualWordStyle[index] ? this.actualWordStyle[index] : "default";
   }
 
-  initialiseNextWordSet() {
+  getNextWordSet() {
     // todo testing is pending
     this.setState({wordCount: 0})
     this.setState({words: this.shuffle(this.state.words)})
@@ -147,6 +140,13 @@ class Home extends Component {
 
   completeCorrect(word) {
     return words[this.state.wordCount] === word;
+  }
+
+  displayResult() {
+    if (!this.state.isWordVisible)
+      return (<div className={'result'}>
+        Correct Words : {this.state.correctWordCount}
+      </div>)
   }
 }
 

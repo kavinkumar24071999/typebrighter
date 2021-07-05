@@ -18,31 +18,17 @@ describe('Home', function () {
   });
 
   it('should have start button', function () {
-    const wrapper = shallow(<Home/>);
+    const wrapper = mount(<Home/>);
     expect(wrapper.find('button')).toHaveLength(1);
   });
 
   it('should start test on clicking the button', function () {
-    const wrapper = shallow(<Home/>);
+    const wrapper = mount(<Home/>);
     const buttonComponent = wrapper.find('button')
     buttonComponent.simulate('click');
     expect(setInterval).toBeCalled();
     expect(wrapper.find('.words-bar')).toHaveLength(1)
   });
-
-  it('should call initialise timer and next word set on clicking the start button and if time in seconds is zero',
-    function () {
-      const initialiseTimerMock = jest.fn()
-      const initialiseWordsMock = jest.fn()
-      Home.prototype.initialiseTimer = initialiseTimerMock
-      Home.prototype.initialiseNextWordSet = initialiseWordsMock
-      const wrapper = shallow(<Home/>);
-      wrapper.setState({timeInSeconds: 0})
-      const buttonComponent = wrapper.find('button')
-      buttonComponent.simulate('click');
-      expect(initialiseTimerMock).toBeCalled();
-      expect(initialiseWordsMock).toBeCalled();
-    });
 
   it('should have input bar for receiving inputs', function () {
     const wrapper = shallow(<Home/>);
@@ -126,6 +112,15 @@ describe('Home', function () {
     it('should return false when the index is not same as the word count', function () {
       const actualValue = new Home().isSelected(1);
       expect(actualValue).toBe(false);
+    });
+  });
+
+  describe('display result', function () {
+    it('should display result when word is invisible', function () {
+      const wrapper = shallow(<Home/>);
+      wrapper.setState({isWordVisible: false})
+      wrapper.instance().displayResult()
+      expect(wrapper.find('.result')).toHaveLength(1)
     });
   });
 
